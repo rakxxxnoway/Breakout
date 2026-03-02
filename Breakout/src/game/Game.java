@@ -57,6 +57,8 @@ public class Game
     
 	public Game(GameBoard board)
 	{
+		// commited from eclipse
+		
 		Random rand = new Random();
 		
 		gameOver = false;
