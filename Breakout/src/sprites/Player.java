@@ -19,7 +19,7 @@ public class Player extends Sprite
 	
 	private Image[] playerModel;
 	private int animationTick = 0;
-	private int animationSpeed = 5;
+	private int animationSpeed = 10;
 	
 	public Player(int x, int y, int width, int height)
 	{

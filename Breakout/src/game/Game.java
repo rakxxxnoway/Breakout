@@ -108,7 +108,7 @@ public class Game
 		int ballStartX = rand.nextInt( (bStartX+bStartVec) - (bStartX-bStartVec) +1 ) + (bStartX - bStartVec);
 		int ballStartY = Settings.startY(Settings.ballSqr);
 		int ballXSpeed = 3;
-		int ballYSpeed = 12;
+		int ballYSpeed = 6;
 		
 		// bricks
 		bw = 70;

@@ -46,10 +46,10 @@ public class Brick extends Sprite
 	    	graphics.setColor(Color.RED);
 	    
 	    else if (HP == 2) 
-	    	graphics.setColor(Color.MAGENTA);
+	    	graphics.setColor(Color.YELLOW);
 	    
         else 
-        	graphics.setColor(Color.YELLOW);
+        	graphics.setColor(Color.GREEN);
 	    
 	    graphics.fillRect(getX(), getY(), getWidth(), getHeight());
         
