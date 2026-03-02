@@ -13,7 +13,7 @@ public class GoldenBrick extends Brick
     @Override
     public void draw(Graphics2D graphics)
     {
-        graphics.setColor(Color.GREEN);
+        graphics.setColor(Color.ORANGE);
         graphics.fillRect(getX(), getY(), getWidth(), getHeight());
         
         graphics.setColor(Color.YELLOW);

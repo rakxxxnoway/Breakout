@@ -57,14 +57,14 @@ public class Game
     
 	public Game(GameBoard board)
 	{
-		// commited from eclipse
-		
 		Random rand = new Random();
 		
 		gameOver = false;
 		win = false;
+		
 		gameOverImage = new ImageIcon(Settings.imgRootPath+"gameover.png").getImage();
 		winnerImage = new ImageIcon(Settings.imgRootPath+"winner1.png").getImage();
+		
 		music = new Sound();
 		sfx = new Sound();
 		music.playSound("ambient.wav", true);
@@ -259,6 +259,11 @@ public class Game
 		        goScaleY,
 		        null
 			);
+			
+			String scoreText = "FINAL SCORE: " + plr.getScore();
+			int scoreX = Settings.startX(600);
+			int scoreY = Settings.startY(400);
+		    graphics.drawString(scoreText, scoreX, scoreY);
 			
 			return;
 		}
