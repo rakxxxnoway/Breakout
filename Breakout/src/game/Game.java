@@ -3,14 +3,9 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Random;
-
-import javax.sound.sampled.Clip;
-import javax.swing.ImageIcon;
+import java.util.List;
 
 import engine.*;
 import sprites.*; 
@@ -20,180 +15,101 @@ public class Game
 	//++++ UI ++++
 	private Font gameFont;
 	private Color fontColor;
-	private int textX;
-	private int scoreY;
-	private int hpY;
-	
+	private Construct game;
 	private Image gameOverImage;
 	private Image winnerImage;
-	private boolean gameOver;
-	private boolean win;
-	private int goX;
-	private int goY;
-	private int goScaleX;
-	private int goScaleY;
+	
 	
 	private Sound music;
 	private Sound sfx;
 	
-	
+
     private Player plr;
     private Ball ball;
 
+    
     private final Box plrBox;
     private final Box ballBox;
-    
-	private ArrayList<Brick> bricks = new ArrayList<>();
-	private ArrayList<Box> brickBoxes = new ArrayList<>();
-	
-	private int bw;
-	private int bh;
-	private int bStartX;
-	private int bStartY;
-	private int bColoums; 
-	private int bRows;
-	private int bGap;
+	private List<Box> foes;
     
     
 	public Game(GameBoard board)
 	{
-		Random rand = new Random();
+		game = new Construct();
+		foes = new ArrayList<>();
 		
-		gameOver = false;
-		win = false;
-		
-		gameOverImage = new ImageIcon(Settings.imgRootPath+"gameover.png").getImage();
-		winnerImage = new ImageIcon(Settings.imgRootPath+"winner1.png").getImage();
+		gameOverImage = game.setImage("gameover.png");
+		winnerImage = game.setImage("win.png");
 		
 		music = new Sound();
 		sfx = new Sound();
 		music.playSound("ambient.wav", true);
 		
-		
 		// font
-		try
-		{
-			InputStream iStream = getClass().getResourceAsStream("/ttf/PressStart2P.ttf");
-			Font baseFont = Font.createFont(Font.TRUETYPE_FONT, iStream);
-			
-			gameFont = baseFont.deriveFont(Settings.FONT_SIZE);
-			fontColor = Color.WHITE;
-			
-			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(baseFont);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		//==== possitioning ====
-		//++++ UI ++++
-		textX = 20;
-		scoreY = 40;
-		hpY = 70;
-		
-		goScaleX = 500;
-		goScaleY = 250;
-		goX = Settings.startX(goScaleX);
-		goY = Settings.startY(goScaleY);
-		
-		// player
-		int plrWidth = Settings.playerWidth;
-		int plrStartX = Settings.startX(plrWidth);
-		int plrStartY = 730;
-		
-		// ball
-		int bStartX = Settings.startX(Settings.ballSqr);
-		int bStartVec = 2;
-		int ballStartX = rand.nextInt( (bStartX+bStartVec) - (bStartX-bStartVec) +1 ) + (bStartX - bStartVec);
-		int ballStartY = Settings.startY(Settings.ballSqr);
-		int ballXSpeed = 3;
-		int ballYSpeed = 12;
-		
-		// bricks
-		bw = 70;
-		bh = 25;
-		bStartX = 60;
-		bStartY = 80;
-		bColoums = 11;
-		bRows = 6;
-		bGap = 12;
+		gameFont = game.setFont("/ttf/PressStart2P.ttf");
+		fontColor = Color.WHITE;
 		
 		//==== sprites ====
         plr = new Player(
-    		plrStartX,
-    		plrStartY,
+    		Settings.PLAYER_START_X,
+    		Settings.PLAYER_START_Y,
     		Settings.playerWidth,
-    		Settings.playerHeight
+    		Settings.PLAYER_HEIGHT
         );
         
         ball = new Ball(
-    		ballStartX,
-    		ballStartY,
-    		Settings.ballSqr,
-    		Settings.ballSqr
+    		Settings.BALL_START_X,
+    		Settings.BALL_START_Y,
+    		Settings.BALL_SQR,
+    		Settings.BALL_SQR
         );
-        
-        // foes
-        for (int r = 0; r < bRows; r++)
-        {
-            for (int c = 0; c < bColoums; c++)
-            {
-                int x = bStartX + c * (bw + bGap);
-                int y = bStartY + r * (bh + bGap);
-
-                Brick b;
-                if (r == 0) 
-                	b = new StrongBrick(x, y, bw, bh);
-                
-                else if (r == 1)
-                    b = new GoldenBrick(x, y, bw, bh);
-                
-                else if (r == 2)
-                	b = new NormalBrick(x, y, bw, bh);
-                
-                else
-                	b = new WeakBrick(x, y, bw, bh);
-
-                bricks.add(b);
-
-                Box bb = new Box(b);
-                bb.enableCollision(true);
-                brickBoxes.add(bb);
-                Collision.registerObject(bb);
-            }
-        }
-
         
         //==== boxes ====
         plrBox = new Box(plr);
         ballBox = new Box(ball);
+        
+        foes = game.createEntities();
+        game.registerMultipleEntities(foes);
         
         
         //==== box configuration ====
         plrBox.enableCollision(true);
         
         ballBox.enableCollision(true);
-        ballBox.setVelocity(ballXSpeed, ballYSpeed);
+        ballBox.setVelocity(Settings.BALL_SPEED_X, Settings.BALL_SPEED_Y);
         
-        
-        //==== registering all collision objects ==== 			(Boxes only)
+        //==== registering all collision objects ==== 		(Boxes only)
         Collision.registerObject(ballBox);
         Collision.registerObject(plrBox);
 	}
 	
 	
 	//methods
-	public boolean isGameOver() { return gameOver; }
+	public boolean isGameOver() { return Settings.gameOver; }
+	
+	public void audioBreak()
+	{
+	    if (music != null)
+	    	music.stopSound();
+	    
+	    if (sfx != null)
+	    	sfx.stopSound();
+	    
+	    if(!Collision.getRegisteredObjects().isEmpty())
+	    	Collision.resetObjects();
+	}
 
 	public void update(Keyboard keyboard)
-	{	
+	{
+		if(keyboard.isKeyDown(Key.Escape))
+			System.out.println(1);
 		
-		if(win)
+		if(Settings.gameOver)
 			return;
 		
 		if(ball.getHP() <= 0)
 		{
-			gameOver = true;
+			Settings.gameOver = true;
 			
 			music.stopSound();
 			sfx.playSound("gameover.wav", false);
@@ -202,7 +118,7 @@ public class Game
 		plr.update(keyboard);
         plrBox.lockToWorld();
         
-        ArrayList<Box> hits = ballBox.physics(Collision.getRegisteredObjects());
+        List<Box> hits = ballBox.physics(Collision.getRegisteredObjects());
 
         for (Box h : hits)
         {
@@ -213,13 +129,12 @@ public class Game
 
                 if (brick.isDestroyed())
                 {
-                    int brickID = bricks.indexOf(brick);
+                    int brickID = foes.indexOf(h);
                     if (brickID >= 0)
                     {
-                        Collision.unregisterObject(brickBoxes.get(brickID));
+                        Collision.unregisterObject(foes.get(brickID));
 
-                        brickBoxes.remove(brickID);
-                        bricks.remove(brickID);
+                        foes.remove(brickID);
                     }
                 }
                 break;
@@ -234,29 +149,31 @@ public class Game
         }
 	
 	
-        if (bricks.isEmpty())
+        if (foes.isEmpty())
         {
-        	win = true;
+        	Settings.win = true;
 
         	music.stopSound();
         	sfx.playSound("win.wav", false);
         }
 	}
+	
+	
 	public void draw(Graphics2D graphics)
 	{
 		//++++ UI ++++
 		graphics.setFont(gameFont);
 		graphics.setColor(fontColor);
-		graphics.drawString("Score: %d".formatted(plr.getScore()), textX, scoreY);
-		graphics.drawString("HP: %d".formatted(ball.getHP()), textX, hpY);
+		graphics.drawString("Score: %d".formatted(plr.getScore()), Settings.TEXT_X, Settings.SCORE_Y);
+		graphics.drawString("HP: %d".formatted(ball.getHP()), Settings.TEXT_X, Settings.HP_Y);
 		
-		if(gameOver)
+		if(Settings.gameOver)
 		{
 			graphics.drawImage(gameOverImage,
-		        goX,
-		        goY,
-		        goScaleX,
-		        goScaleY,
+		        Settings.GAMEOVER_X,
+		        Settings.GAMEOVER_Y,
+		        Settings.GAMEOVER_SCALE_X,
+		        Settings.GAMEOVER_SCALE_Y,
 		        null
 			);
 			
@@ -268,13 +185,13 @@ public class Game
 			return;
 		}
 		
-		if(win)
+		if(Settings.win)
 		{
 			graphics.drawImage(winnerImage,
-		        goX,
-		        goY,
-		        goScaleX,
-		        goScaleY,
+				Settings.GAMEOVER_X,
+		        Settings.GAMEOVER_Y,
+		        Settings.GAMEOVER_SCALE_X,
+		        Settings.GAMEOVER_SCALE_Y,
 		        null
 			);
 			
@@ -306,9 +223,8 @@ public class Game
 		plr.draw(graphics);
 		ball.draw(graphics);
 		
-		for (Brick b : bricks)
-		{
-		    b.draw(graphics);
-		}
+		for (Box box : foes)
+		    box.getOwner().draw(graphics);
+		
 	}
 }

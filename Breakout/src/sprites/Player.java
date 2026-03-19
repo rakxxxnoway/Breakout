@@ -44,6 +44,9 @@ public class Player extends Sprite
 		if(keyboard.isKeyDown(Key.Right) || keyboard.isKeyDown(Key.D))
 			setX(getX() + playerSpeed);
 		
+		if(keyboard.isKeyDown(Key.Escape))
+			
+		
 		animationTick++;
 	}
 

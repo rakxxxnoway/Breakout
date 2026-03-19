@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.List;
 
 //import java.awt.Graphics2D;
 
@@ -31,23 +32,23 @@ public class Box {
     }
     
     
+    // getters
+    public int getX() 			{ return master.getX(); }
+    public int getY() 			{ return master.getY(); }
+    public int getWidth() 		{ return master.getWidth(); }
+    public int getHeight() 		{ return master.getHeight(); }
+    public Sprite getOwner() 	{ return master; }
+    public boolean didFall() 	{ return outOfBorder; }
+    
+    
     // setter
     public void setVelocity(int vx, int vy) { this.vx = vx; this.vy = vy; }
-    public void backOn() { this.outOfBorder = false; }
-    
-    
-    // getters
-    public int getX() { return master.getX(); }
-    public int getY() { return master.getY(); }
-    public int getWidth() { return master.getWidth(); }
-    public int getHeight() { return master.getHeight(); }
-    public Sprite getOwner() { return master; }
-    public boolean didFall() { return outOfBorder; }
-
+    public void backOn() 					{ this.outOfBorder = false; }
+  
     
     // methods
     public void enableCollision(boolean on) { this.collidable = on; }
-    public boolean isCollisionEnabled() { return collidable; }
+    public boolean isCollisionEnabled() 	{ return collidable; }
   
     
     public void lockToWorld()
@@ -69,9 +70,9 @@ public class Box {
     }
     
     
-    public ArrayList<Box> physics(ArrayList<Box> slaves)
+    public List<Box> physics(List<Box> slaves)
     {
-        ArrayList<Box> hits = new ArrayList<>();
+        List<Box> hits = new ArrayList<>();
         
         master.setX(master.getX() + vx);
         master.setY(master.getY() + vy);

@@ -1,24 +1,16 @@
 package engine;
 
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
+import java.awt.GridBagLayout;
 import java.awt.CardLayout;
-import java.awt.event.KeyEvent;
+import java.awt.Dimension;
 
 import javax.swing.*;
 
-import game.Game;
-
-public class Program extends JFrame {
-	
-	private static final String MENU = "menu";
-	private static final String GAME = "game";
-	private static final String STAT = "stats";
-
+public class Program extends JFrame
+{
 	private CardLayout layout;
 	private JPanel root;
-	private Tweak gameTweak;
 
 	JPanel menuSceen;
 	JPanel gameSceen;
@@ -26,14 +18,20 @@ public class Program extends JFrame {
 
 	Font font;
 	GameBoard board;
+	Construct ui;
+	Tweak tweak;
 	
-	public Program() {
+	public Program()
+	{
+		tweak = new Tweak("menu1.png");
+		
 		layout = new CardLayout();
 		root = new JPanel(layout);
+        root.setPreferredSize(new Dimension( Settings.LAUNCHER_WIDTH, Settings.LAUNCHER_HEIGHT ));
 
 		setTitle("Breakout: Space Invasion - Launcher");
 		setFont(font);
-		setResizable(true);
+		setResizable(false);
 		
 		menu();
 		stats();
@@ -44,88 +42,53 @@ public class Program extends JFrame {
     	setDefaultCloseOperation(EXIT_ON_CLOSE);
     	setVisible(true);
 	}
-
+	
 	private void menu()
 	{
-		menuSceen = new JPanel();
-		menuSceen.setLayout(new GridLayout(4, 1));
+		menuSceen = new Tweak("menu2.png");
+		menuSceen.setLayout(new GridBagLayout());
+		
+		JPanel content = new JPanel();
+	    content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+	    content.setOpaque(false);
 
-		ImageIcon ico = new ImageIcon("img/logo.png");
-		Image img = ico.getImage().getScaledInstance(100, 40, Image.SCALE_SMOOTH);
+		JLabel logo = tweak.logo("logo.png");
+		
+		JButton startGame 	= tweak.createImageButton("start_game.png", Settings.LAUNCHER_BUTTON_WIDTH, Settings.LAUNCHER_BUTTON_HEIGHT);
+		JButton statsButton = tweak.createImageButton("scoreboard.png", Settings.LAUNCHER_BUTTON_WIDTH, Settings.LAUNCHER_BUTTON_HEIGHT);
+		JButton exitGame 	= tweak.createImageButton("exit.png", 		Settings.LAUNCHER_BUTTON_WIDTH, Settings.LAUNCHER_BUTTON_HEIGHT);
 
-		JLabel logo = new JLabel( new ImageIcon(img) );
-		logo.setHorizontalAlignment(SwingConstants.CENTER);
+		startGame	.setAlignmentX(CENTER_ALIGNMENT);
+	    statsButton	.setAlignmentX(CENTER_ALIGNMENT);
+	    exitGame	.setAlignmentX(CENTER_ALIGNMENT);
+		
+		startGame	.addActionListener(e -> { board = tweak.newGameWindow("space2.png", "Breakout: Space Invasion - Game"); });
+		statsButton	.addActionListener(e -> layout.show(root, Settings.STAT));
+		exitGame	.addActionListener(e -> System.exit(0));
 
-		JButton startGame = new JButton("Start game");
-		JButton statsButton = new JButton("Scoreboard");
-		JButton exitGame = new JButton("Exit");
+		content.add(logo);
+	    content.add(javax.swing.Box.createVerticalStrut(100));
+	    
+	    content.add(startGame);
+	    content.add(javax.swing.Box.createVerticalStrut(6));
+	    
+	    content.add(statsButton);
+	    content.add(javax.swing.Box.createVerticalStrut(6));
+	    
+	    content.add(exitGame);
 
-		startGame.addActionListener(e -> {
-    		JFrame gameWindow = new JFrame("Breakout: Space Invasion - Game");
-    
-    		board = new GameBoard();
-    		board.setFocusable(true);
-   
-			board.setBackground("space2.png");
-
-    		gameWindow.add(board);
-    		gameWindow.pack();
-    		gameWindow.setLocationRelativeTo(null);
-    		gameWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    		gameWindow.setResizable(false);
-    		gameWindow.setVisible(true);
- 
-    		gameWindow.requestFocus();
-    		board.requestFocusInWindow();
-    
-    		//this.setVisible(false);
-
-			board.start();
-		});
-
-		statsButton.addActionListener(e -> layout.show(root, STAT));
-		exitGame.addActionListener(e -> System.exit(0));
-
-		menuSceen.add(logo);
-		menuSceen.add(startGame);
-		menuSceen.add(statsButton);
-		menuSceen.add(exitGame);
-
-		root.add(menuSceen, MENU);
+	    menuSceen.add(content);
+		root.add(menuSceen, Settings.MENU);
 	}	
 
 	private void stats()
 	{
-		statsSceen = new JPanel();
-		statsSceen.setLayout(new GridLayout(2, 2));
-
-		JLabel score = new JLabel("Scoreboard");
-		JLabel runs = new JLabel("Latest runs");
-
-		JButton back = new JButton("Back");
-
-		statsSceen.add(score);
-		statsSceen.add(runs);
-		statsSceen.add(back);
-
-		back.addActionListener(e -> layout.show(root, MENU));
-
-		root.add(statsSceen, STAT);
-	}
-
-	@Override
-	protected void processKeyEvent(KeyEvent e) {
-		super.processKeyEvent(e);
-		board.processKeyEvent(e);
+		statsSceen = tweak.newScoreboardWindow("menu1.png", layout, root);
+		root.add(statsSceen, Settings.STAT);
 	}
 
 	public static void main(String[] args)
 	{
 		Program program = new Program();
-		/*
-		program.soundTweak = new Sound(program);
-	
-		program.soundTweak.playSound("ambient.wav", true);
-		*/
 	}
 }

@@ -1,10 +1,11 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class Collision
 {
-	private static ArrayList<Box> boxArray = new ArrayList<Box>();
+	private static List<Box> boxArray = new ArrayList<>();
 	
     private Collision() {}
 
@@ -33,11 +34,12 @@ public final class Collision
     }
     
     // setter
-    public static void registerObject(Box b) { boxArray.add(b); }
+    public static void registerObject(Box b) 	{ boxArray.add(b); }
+    public static void resetObjects()			{ boxArray.clear(); }
     
     
     public static void unregisterObject(Box b) { boxArray.remove(b); }
     
     // getter
-    public static ArrayList<Box> getRegisteredObjects() { return boxArray; }
+    public static List<Box> getRegisteredObjects() { return boxArray; }
 }

@@ -2,8 +2,10 @@ package engine;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
-public class Keyboard {
+public class Keyboard
+{	
 	HashMap<Key, Boolean> state;
+	
 	public Keyboard() {
 		state = new HashMap<Key, Boolean>();
 		state.put(Key.Up, false);

@@ -4,7 +4,8 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent; 
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import game.Game;
@@ -14,10 +15,12 @@ public class GameBoard extends JComponent
 	private Timer timer;
 	private Game game;
 	private Keyboard keyboard;
+	private boolean awaitStart;
 
 	private Image bg;
 
 	public GameBoard() {
+		awaitStart = true;
 		keyboard = new Keyboard();
 		game = new Game(this);
 		setOpaque(true);
@@ -56,8 +59,25 @@ public class GameBoard extends JComponent
 	protected void processKeyEvent(KeyEvent e) {
 		super.processKeyEvent(e);
 		if (e.getID() == KeyEvent.KEY_PRESSED)
+		{
 			keyboard.processKeyEvent(e.getKeyCode(), true);
-		else if (e.getID() == KeyEvent.KEY_RELEASED)
+			
+			if (awaitStart && keyboard.isKeyDown(Key.Space))
+			{
+                awaitStart = false;
+                start();
+                return;
+            }
+			
+			if (keyboard.isKeyDown(Key.Escape)) {
+                stop();
+
+                Window window = SwingUtilities.getWindowAncestor(this);
+                if (window != null)
+                    window.dispose();
+            }
+			
+		} else if (e.getID() == KeyEvent.KEY_RELEASED)
 			keyboard.processKeyEvent(e.getKeyCode(), false);
 	}
 
@@ -75,6 +95,15 @@ public class GameBoard extends JComponent
 	    });
 
 	    timer.start();
+	}
+	
+	public void stop()
+	{
+		if(timer != null)
+			timer.stop();
+		
+		if(game != null)
+			game.audioBreak();
 	}
 	
 	/*

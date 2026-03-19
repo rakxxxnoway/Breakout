@@ -40,9 +40,14 @@ public class Sound
 
 	public void stopSound()
 	{
-		clip.stop();
-		clip.close();
-		//clip = null;
+		if (clip != null)
+		{
+	        if (clip.isRunning())
+	            clip.stop();
+	       
+	        clip.close();
+	        clip = null;
+	    }
 	}
 }
 
