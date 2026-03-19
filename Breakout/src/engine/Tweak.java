@@ -174,8 +174,16 @@ class Tweak extends JPanel
 		        Settings.LAUNCHER_BUTTON_WIDTH,
 		        Settings.LAUNCHER_BUTTON_HEIGHT
 		);
+		
 		back.setAlignmentX(CENTER_ALIGNMENT);
-		back.addActionListener(e -> layout.show(root, Settings.MENU));
+		back.addActionListener(e ->
+		{
+			layout.show(root, Settings.MENU);
+			Sound sfx = new Sound();
+			sfx.setVolume(Settings.SFX_MENU);
+			
+			sfx.playSound("plop2.wav", false);
+		});
 
 		statsSceen.add(javax.swing.Box.createVerticalStrut(30));
 		statsSceen.add(columns);

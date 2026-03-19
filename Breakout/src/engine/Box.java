@@ -3,6 +3,8 @@ package engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import sprites.Player;
+
 //import java.awt.Graphics2D;
 
 public class Box {
@@ -19,6 +21,7 @@ public class Box {
     
     
     private boolean outOfBorder;
+    private boolean plrHit;
 
 
     // constructor
@@ -29,6 +32,7 @@ public class Box {
         this.startY = master.getY();
         
         outOfBorder = false;
+        plrHit = false;
     }
     
     
@@ -39,11 +43,13 @@ public class Box {
     public int getHeight() 		{ return master.getHeight(); }
     public Sprite getOwner() 	{ return master; }
     public boolean didFall() 	{ return outOfBorder; }
+    public boolean didHitPlr()	{ return plrHit; }
     
     
     // setter
     public void setVelocity(int vx, int vy) { this.vx = vx; this.vy = vy; }
     public void backOn() 					{ this.outOfBorder = false; }
+    public void ballOffPlr()				{ plrHit = false; }
   
     
     // methods
@@ -122,39 +128,33 @@ public class Box {
                 continue;
 
             if (!Collision.aabb(
-                    getX(),
-                    getY(),
-                    getWidth(),
-                    getHeight(),
-                    //
-                    slave.getX(),
-                    slave.getY(),
-                    slave.getWidth(),
-                    slave.getHeight()
-            ))
-                continue;
-           
+                    getX(), 			getY(),
+                    getWidth(),			getHeight(),
+                    slave.getX(), 		slave.getY(),
+                    slave.getWidth(),	slave.getHeight()
+            )) continue;
+            
+            
             hits.add(slave);
+            
+            if (slave.getOwner() instanceof Player)
+                plrHit = true;
 
             int ox = Collision.overlapX(
-                    getX(),
-                    getWidth(),
-                    //
-                    slave.getX(),
-                    slave.getWidth()
+                    getX(),			getWidth(),
+                    slave.getX(), 	slave.getWidth()
             );
 
             int oy = Collision.overlapY(
-                    getY(),
-                    getHeight(),
-                    slave.getY(),
-                    slave.getHeight()
+                    getY(),			getHeight(),
+                    slave.getY(),	slave.getHeight()
             );
 
             if (ox < oy)
             {
                 if (getX() < slave.getX())
                     master.setX(master.getX() - ox);
+
                 else
                     master.setX(master.getX() + ox);
 

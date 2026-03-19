@@ -43,6 +43,10 @@ public class Game
 		
 		music = new Sound();
 		sfx = new Sound();
+		
+		sfx.setVolume(Settings.SFX_PERCENT);
+		music.setVolume(Settings.MUSIC_PERCENT);
+		
 		music.playSound("ambient.wav", true);
 		
 		// font
@@ -51,18 +55,12 @@ public class Game
 		
 		//==== sprites ====
         plr = new Player(
-    		Settings.PLAYER_START_X,
-    		Settings.PLAYER_START_Y,
-    		Settings.playerWidth,
-    		Settings.PLAYER_HEIGHT
-        );
+    		Settings.PLAYER_START_X, 	Settings.PLAYER_START_Y,
+    		Settings.playerWidth, 		Settings.PLAYER_HEIGHT 	);
         
         ball = new Ball(
-    		Settings.BALL_START_X,
-    		Settings.BALL_START_Y,
-    		Settings.BALL_SQR,
-    		Settings.BALL_SQR
-        );
+    		Settings.BALL_START_X, 		Settings.BALL_START_Y,
+    		Settings.BALL_SQR,			Settings.BALL_SQR 		);
         
         //==== boxes ====
         plrBox = new Box(plr);
@@ -119,7 +117,7 @@ public class Game
         plrBox.lockToWorld();
         
         List<Box> hits = ballBox.physics(Collision.getRegisteredObjects());
-
+        
         for (Box h : hits)
         {
             if (h.getOwner() instanceof Brick brick)
@@ -139,6 +137,12 @@ public class Game
                 }
                 break;
             }
+        }
+        
+        if(ballBox.didHitPlr())
+        {
+        	sfx.playSound("plop1.wav", false);
+        	ballBox.ballOffPlr();
         }
         
         if(ballBox.didFall())

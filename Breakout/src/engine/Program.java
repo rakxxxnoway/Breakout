@@ -20,10 +20,13 @@ public class Program extends JFrame
 	GameBoard board;
 	Construct ui;
 	Tweak tweak;
+	Sound sfx;
 	
 	public Program()
 	{
 		tweak = new Tweak("menu1.png");
+		sfx = new Sound();
+		sfx.setVolume(Settings.SFX_MENU);
 		
 		layout = new CardLayout();
 		root = new JPanel(layout);
@@ -62,9 +65,20 @@ public class Program extends JFrame
 	    statsButton	.setAlignmentX(CENTER_ALIGNMENT);
 	    exitGame	.setAlignmentX(CENTER_ALIGNMENT);
 		
-		startGame	.addActionListener(e -> { board = tweak.newGameWindow("space2.png", "Breakout: Space Invasion - Game"); });
-		statsButton	.addActionListener(e -> layout.show(root, Settings.STAT));
-		exitGame	.addActionListener(e -> System.exit(0));
+		startGame	.addActionListener(e -> {
+			board = tweak.newGameWindow("space2.png", "Breakout: Space Invasion - Game");
+			sfx.playSound("plop2.wav", false);
+		});
+		
+		statsButton	.addActionListener(e -> {
+			sfx.playSound("plop2.wav", false);
+			layout.show(root, Settings.STAT);
+		});
+		
+		exitGame	.addActionListener(e -> {
+			sfx.playSound("plop2.wav", false);
+			System.exit(0);
+		});
 
 		content.add(logo);
 	    content.add(javax.swing.Box.createVerticalStrut(100));

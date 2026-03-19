@@ -4,10 +4,12 @@ import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class Sound
 {
 	private Clip clip;
+	private float volumedB = 0f;
 
 	public String getMusicFile(String path) { return Settings.musicRootPath+path; }
 
@@ -28,6 +30,9 @@ public class Sound
 			clip = AudioSystem.getClip();
 			clip.open(aStream);
 
+			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(volumedB);
+			
 			if(loop)
 				clip.loop(Clip.LOOP_CONTINUOUSLY);
 			
@@ -49,6 +54,8 @@ public class Sound
 	        clip = null;
 	    }
 	}
+	
+	public void setVolume(int percent) { volumedB = (float)(20.0 * Math.log10(percent / 100.0)); }
 }
 
 /* old

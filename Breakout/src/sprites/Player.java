@@ -14,26 +14,31 @@ import engine.Sprite;
 public class Player extends Sprite
 {
 	private int score;
-	
+	private int animationTick;
+	private int animationSpeed;
 	private int playerSpeed;
 	
+	
 	private Image[] playerModel;
-	private int animationTick = 0;
-	private int animationSpeed = 5;
+	
 	
 	public Player(int x, int y, int width, int height)
 	{
 		super(x, y, width, height);
 	
-		playerSpeed = 9;
-		score = 0;
+		score 			= 0;
+		playerSpeed 	= 9;
 		
-		playerModel = new Image[4];
-		playerModel[0] = new ImageIcon("img/player_model_0.png").getImage();
-		playerModel[1] = new ImageIcon("img/player_model_1.png").getImage();
-		playerModel[2] = new ImageIcon("img/player_model_2.png").getImage();
-		playerModel[3] = new ImageIcon("img/player_model_3.png").getImage();
+		animationTick 	= 0;
+		animationSpeed 	= 5;
+		
+		playerModel 	= new Image[4];
+		playerModel[0] 	= new ImageIcon("img/player_model_0.png").getImage();
+		playerModel[1] 	= new ImageIcon("img/player_model_1.png").getImage();
+		playerModel[2] 	= new ImageIcon("img/player_model_2.png").getImage();
+		playerModel[3] 	= new ImageIcon("img/player_model_3.png").getImage();
 	}
+	
 	
 	@Override
 	public void update(Keyboard keyboard) {	
@@ -42,14 +47,12 @@ public class Player extends Sprite
 			setX(getX() - playerSpeed);
 		
 		if(keyboard.isKeyDown(Key.Right) || keyboard.isKeyDown(Key.D))
-			setX(getX() + playerSpeed);
-		
-		if(keyboard.isKeyDown(Key.Escape))
-			
+			setX(getX() + playerSpeed);	
 		
 		animationTick++;
 	}
 
+	
 	@Override
 	public void draw(Graphics2D graphics)
 	{
