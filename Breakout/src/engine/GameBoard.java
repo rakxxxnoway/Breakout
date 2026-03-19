@@ -103,7 +103,7 @@ public class GameBoard extends JComponent
 			timer.stop();
 		
 		if(game != null)
-			game.audioBreak();
+			game.resetGame();
 	}
 	
 	/*
