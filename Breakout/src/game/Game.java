@@ -85,7 +85,7 @@ public class Game
 	//methods
 	public boolean isGameOver() { return Settings.gameOver; }
 	
-	public void audioBreak()
+	public void resetGame()
 	{
 	    if (music != null)
 	    	music.stopSound();
@@ -95,6 +95,9 @@ public class Game
 	    
 	    if(!Collision.getRegisteredObjects().isEmpty())
 	    	Collision.resetObjects();
+	    
+	    Settings.gameOver = false;
+	    Settings.win = false;
 	}
 
 	public void update(Keyboard keyboard)
