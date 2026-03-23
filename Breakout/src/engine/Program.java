@@ -70,9 +70,10 @@ public class Program extends JFrame
 			sfx.playSound("plop2.wav", false);
 		});
 		
-		statsButton	.addActionListener(e -> {
-			sfx.playSound("plop2.wav", false);
-			layout.show(root, Settings.STAT);
+		statsButton.addActionListener(e -> {
+		    sfx.playSound("plop2.wav", false);
+		    tweak.refreshScoreboard();
+		    layout.show(root, Settings.STAT);
 		});
 		
 		exitGame	.addActionListener(e -> {

@@ -7,6 +7,8 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import engine.*;
 import sprites.*; 
 
@@ -39,7 +41,7 @@ public class Game
 		foes = new ArrayList<>();
 		
 		gameOverImage = game.setImage("gameover.png");
-		winnerImage = game.setImage("win.png");
+		winnerImage = game.setImage("winner1.png");
 		
 		music = new Sound();
 		sfx = new Sound();
@@ -79,11 +81,13 @@ public class Game
         //==== registering all collision objects ==== 		(Boxes only)
         Collision.registerObject(ballBox);
         Collision.registerObject(plrBox);
+        
+
 	}
 	
 	
 	//methods
-	public boolean isGameOver() { return Settings.gameOver; }
+	public boolean isGameOver() { return Settings.gameOver || Settings.win; }
 	
 	public void resetGame()
 	{
@@ -98,8 +102,34 @@ public class Game
 	    
 	    Settings.gameOver = false;
 	    Settings.win = false;
+	    Settings.scoreSaved = false;
 	}
 
+	private void finishRound(boolean won)
+	{
+	    if (Settings.scoreSaved)
+	        return;
+
+	    Settings.scoreSaved = true;
+
+	    Settings.win = won;
+	    Settings.gameOver = !won;
+
+	    music.stopSound();
+
+	    if (won)
+	        sfx.playSound("win.wav", false);
+	    else
+	        sfx.playSound("gameover.wav", false);
+
+	    String name = JOptionPane.showInputDialog(null, "Enter your name:");
+
+	    if (name == null || name.trim().isEmpty())
+	        name = "Anonymous";
+
+	    ScoreManager.saveScore(name, plr.getScore());
+	}
+	
 	public void update(Keyboard keyboard)
 	{
 		if(keyboard.isKeyDown(Key.Escape))
@@ -110,10 +140,7 @@ public class Game
 		
 		if(ball.getHP() <= 0)
 		{
-			Settings.gameOver = true;
-			
-			music.stopSound();
-			sfx.playSound("gameover.wav", false);
+		    finishRound(false);
 		}
 		
 		plr.update(keyboard);
@@ -158,11 +185,8 @@ public class Game
 	
         if (foes.isEmpty())
         {
-        	Settings.win = true;
-
-        	music.stopSound();
-        	sfx.playSound("win.wav", false);
-        }
+            finishRound(true);
+        }    
 	}
 	
 	

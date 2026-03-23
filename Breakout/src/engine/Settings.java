@@ -76,6 +76,7 @@ public class Settings
 	// Game
 	public static boolean gameOver 					= false;
 	public static boolean win 						= false;
+	public static boolean scoreSaved				= false;
 	
 	
 	// Methods

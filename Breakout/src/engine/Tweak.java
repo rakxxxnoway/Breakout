@@ -1,12 +1,16 @@
 package engine;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,6 +26,8 @@ class Tweak extends JPanel
 	
 	private final Image background;
     private Construct ui;
+    private JTextArea scoreTextArea;
+    private JTextArea runsTextArea;
 
     public Tweak(String path)
     {
@@ -42,7 +48,7 @@ class Tweak extends JPanel
 	public GameBoard newGameWindow(String bgFilePath, String title)
 	{
 		JFrame gameWindow = new JFrame(title);
-		GameBoard board = board = new GameBoard();
+		GameBoard board = new GameBoard();
 		board.setFocusable(true);
 
 		board.setBackground(bgFilePath);
@@ -107,6 +113,18 @@ class Tweak extends JPanel
 	    return button;
 	}
 	
+	public void refreshScoreboard()
+	{
+	    if (scoreTextArea == null || runsTextArea == null)
+	        return;
+
+	    scoreTextArea.setText(ScoreManager.getTopScoresText(10));
+	    runsTextArea.setText(ScoreManager.getLatestRunsText(10));
+
+	    scoreTextArea.setCaretPosition(0);
+	    runsTextArea.setCaretPosition(0);
+	}
+	
 	public JPanel newScoreboardWindow(String bgPath, CardLayout layout, JPanel root)
 	{
 		JPanel statsSceen = new Tweak("menu1.png");
@@ -119,7 +137,11 @@ class Tweak extends JPanel
 		columns.setAlignmentX(CENTER_ALIGNMENT);
 
 		JLabel score = new JLabel("Scoreboard");
+		score.setForeground(new Color(220, 200, 10));
+		score.setFont(new Font("Arial", Font.BOLD, 24));
 		JLabel runs  = new JLabel("Latest runs");
+		runs.setForeground(new Color(220, 200, 10));
+		runs.setFont(new Font("Arial", Font.BOLD, 24));
 
 		score.setAlignmentX(CENTER_ALIGNMENT);
 		runs.setAlignmentX(CENTER_ALIGNMENT);
@@ -127,14 +149,22 @@ class Tweak extends JPanel
 		JPanel left = new JPanel();
 		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
 		left.setOpaque(false);
+		
 
-		JTextArea scoreText = new JTextArea();
-		scoreText.setEditable(false);
-		scoreText.setLineWrap(true);
-		scoreText.setWrapStyleWord(true);
-		//scoreText.setText("1. Alex - 1200\n2. Max - 950\n3. You - 870");
+		scoreTextArea = new JTextArea();
+		scoreTextArea.setEditable(false);
+		scoreTextArea.setLineWrap(true);
+		scoreTextArea.setWrapStyleWord(true);
+		scoreTextArea.setOpaque(true);
+		scoreTextArea.setBackground(new Color(20, 20, 35));
+		scoreTextArea.setForeground(new Color(240, 240, 255));
+		scoreTextArea.setCaretColor(new Color(240, 240, 255));
+		scoreTextArea.setFont(new Font("Monospaced", Font.BOLD, 20));
+		scoreTextArea.setMargin(new Insets(12, 12, 12, 12));
+		scoreTextArea.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
 
-		JScrollPane scoreScroll = new JScrollPane(scoreText);
+
+		JScrollPane scoreScroll = new JScrollPane(scoreTextArea);
 		scoreScroll.setPreferredSize(new Dimension(250, 200));
 		scoreScroll.setMaximumSize(new Dimension(250, 200));
 		scoreScroll.setMinimumSize(new Dimension(250, 200));
@@ -148,13 +178,19 @@ class Tweak extends JPanel
 		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
 		right.setOpaque(false);
 
-		JTextArea runsText = new JTextArea();
-		runsText.setEditable(false);
-		runsText.setLineWrap(true);
-		runsText.setWrapStyleWord(true);
-		//runsText.setText("Run 1: 870\nRun 2: 650\nRun 3: 420");
+		runsTextArea = new JTextArea();
+		runsTextArea.setEditable(false);
+		runsTextArea.setLineWrap(true);
+		runsTextArea.setWrapStyleWord(true);
+		runsTextArea.setOpaque(true);
+		runsTextArea.setBackground(new Color(20, 20, 35));
+		runsTextArea.setForeground(new Color(240, 240, 255));
+		runsTextArea.setCaretColor(new Color(240, 240, 255));
+		runsTextArea.setFont(new Font("Monospaced", Font.BOLD, 20));
+		runsTextArea.setMargin(new Insets(12, 12, 12, 12));
+		runsTextArea.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
 
-		JScrollPane runsScroll = new JScrollPane(runsText);
+		JScrollPane runsScroll = new JScrollPane(runsTextArea);
 		runsScroll.setPreferredSize(new Dimension(250, 200));
 		runsScroll.setMaximumSize(new Dimension(250, 200));
 		runsScroll.setMinimumSize(new Dimension(250, 200));
@@ -168,6 +204,9 @@ class Tweak extends JPanel
 		columns.add(javax.swing.Box.createHorizontalStrut(40));
 		columns.add(right);
 
+		Dimension boxSize = new Dimension(320, 220);
+		scoreScroll.setPreferredSize(boxSize);
+		runsScroll.setPreferredSize(boxSize);
 
 		JButton back = createImageButton(
 		        "back.png",
@@ -190,6 +229,7 @@ class Tweak extends JPanel
 		statsSceen.add(javax.swing.Box.createVerticalStrut(20));
 		statsSceen.add(back);
 
+		refreshScoreboard();
 		return statsSceen;
 	}
 }
