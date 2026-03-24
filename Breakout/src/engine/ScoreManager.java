@@ -38,29 +38,39 @@ public class ScoreManager
         }
     }
 
+    /*
     private static void ensureFileExists() throws IOException
     {
-        if (Files.notExists(SCORE_FILE.getParent()))
-            Files.createDirectories(SCORE_FILE.getParent());
+        if (Files.notExists(Settings.dataRootPath))
+            Files.createDirectories(Settings.dataRootPath);
 
         if (Files.notExists(SCORE_FILE))
             Files.createFile(SCORE_FILE);
+    }*/
+    
+    private static void ensureFileExists() throws IOException
+    {
+    	Files.createDirectories(Paths.get(Settings.dataRootPath));
+        Files.write(SCORE_FILE, new byte[0], StandardOpenOption.CREATE);
     }
 
     public static void saveScore(String name, int score)
     {
         try
         {
+        	String nameCap;
             ensureFileExists();
 
             if (name == null || name.trim().isEmpty())
-                name = "Anonymous";
+                name = "ano".toUpperCase();
 
             name = name.trim().replace(";", ",");
+            
+            nameCap = "%c%c%c".formatted( name.charAt(0),  name.charAt(1), name.charAt(2)).toUpperCase();
 
             Files.writeString(
                 SCORE_FILE,
-                name + ";" + score + System.lineSeparator(),
+                nameCap + ";" + score + System.lineSeparator(),
                 StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND
@@ -142,28 +152,30 @@ public class ScoreManager
         return sb.toString();
     }
 
-    public static String getLatestRunsText(int limit)
+    public static String getLatestRunsText()
     {
         List<ScoreEntry> scores = loadScores();
-
+        
         if (scores.isEmpty())
             return "No runs yet.";
-
+        
         StringBuilder sb = new StringBuilder();
 
-        int count = 0;
+        int maxRuns = 3;
+        int counter = 0;
 
-        for (int i = scores.size() - 1; i >= 0 && count < limit; i--, count++)
+        for (int i = scores.size() - 1; i >= 0; i--)
         {
+            if(maxRuns == 0)
+                break;
+
+            counter++;
+
             ScoreEntry entry = scores.get(i);
 
-            sb.append("Run ")
-              .append(count + 1)
-              .append(": ")
-              .append(entry.getName())
-              .append(" - ")
-              .append(entry.getScore())
-              .append("\n");
+            sb.append(counter).append(". ").append(entry.getScore()).append("\n");
+
+            maxRuns--;
         }
 
         return sb.toString();

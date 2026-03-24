@@ -119,7 +119,7 @@ class Tweak extends JPanel
 	        return;
 
 	    scoreTextArea.setText(ScoreManager.getTopScoresText(10));
-	    runsTextArea.setText(ScoreManager.getLatestRunsText(10));
+	    runsTextArea.setText(ScoreManager.getLatestRunsText());
 
 	    scoreTextArea.setCaretPosition(0);
 	    runsTextArea.setCaretPosition(0);

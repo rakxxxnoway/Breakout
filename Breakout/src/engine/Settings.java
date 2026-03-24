@@ -46,6 +46,7 @@ public class Settings
 	public static final String imgRootPath 			= "img/";
 	public static final String musicRootPath 		= "music/";
 	public static final String ttfRootPath 			= "ttf/";
+	public static final String dataRootPath 		= "data/";
 	
 	
 	// Player
