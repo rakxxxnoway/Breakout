@@ -26,8 +26,8 @@ class Tweak extends JPanel
 	
 	private final Image background;
     private Construct ui;
-    private JTextArea scoreTextArea;
-    private JTextArea runsTextArea;
+    private javax.swing.JList<String> scoreList;
+    private javax.swing.JList<String> runsList;
 
     public Tweak(String path)
     {
@@ -115,14 +115,23 @@ class Tweak extends JPanel
 	
 	public void refreshScoreboard()
 	{
-	    if (scoreTextArea == null || runsTextArea == null)
+	    if (scoreList == null || runsList == null)
 	        return;
 
-	    scoreTextArea.setText(ScoreManager.getTopScoresText(10));
-	    runsTextArea.setText(ScoreManager.getLatestRunsText());
+	    HighscoreList highscore = new HighscoreList();
+	    LatestRunsList latestRuns = new LatestRunsList();
 
-	    scoreTextArea.setCaretPosition(0);
-	    runsTextArea.setCaretPosition(0);
+	    java.util.List<ScoreEntry> allScores = ScoreStorage.loadScores();
+
+	    highscore.setEntries(allScores);
+
+	    for (ScoreEntry entry : allScores)
+	    {
+	        latestRuns.addRun(entry.getScore());
+	    }
+
+	    scoreList.setModel(highscore.getModel());
+	    runsList.setModel(latestRuns.getModel());
 	}
 	
 	public JPanel newScoreboardWindow(String bgPath, CardLayout layout, JPanel root)
@@ -151,20 +160,14 @@ class Tweak extends JPanel
 		left.setOpaque(false);
 		
 
-		scoreTextArea = new JTextArea();
-		scoreTextArea.setEditable(false);
-		scoreTextArea.setLineWrap(true);
-		scoreTextArea.setWrapStyleWord(true);
-		scoreTextArea.setOpaque(true);
-		scoreTextArea.setBackground(new Color(20, 20, 35));
-		scoreTextArea.setForeground(new Color(240, 240, 255));
-		scoreTextArea.setCaretColor(new Color(240, 240, 255));
-		scoreTextArea.setFont(new Font("Monospaced", Font.BOLD, 20));
-		scoreTextArea.setMargin(new Insets(12, 12, 12, 12));
-		scoreTextArea.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
+		scoreList = new javax.swing.JList<>();
+		scoreList.setBackground(new Color(20, 20, 35));
+		scoreList.setForeground(new Color(240, 240, 255));
+		scoreList.setFont(new Font("Monospaced", Font.BOLD, 20));
+		scoreList.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
 
-
-		JScrollPane scoreScroll = new JScrollPane(scoreTextArea);
+		
+		JScrollPane scoreScroll = new JScrollPane(scoreList);
 		scoreScroll.setPreferredSize(new Dimension(250, 200));
 		scoreScroll.setMaximumSize(new Dimension(250, 200));
 		scoreScroll.setMinimumSize(new Dimension(250, 200));
@@ -178,19 +181,13 @@ class Tweak extends JPanel
 		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
 		right.setOpaque(false);
 
-		runsTextArea = new JTextArea();
-		runsTextArea.setEditable(false);
-		runsTextArea.setLineWrap(true);
-		runsTextArea.setWrapStyleWord(true);
-		runsTextArea.setOpaque(true);
-		runsTextArea.setBackground(new Color(20, 20, 35));
-		runsTextArea.setForeground(new Color(240, 240, 255));
-		runsTextArea.setCaretColor(new Color(240, 240, 255));
-		runsTextArea.setFont(new Font("Monospaced", Font.BOLD, 20));
-		runsTextArea.setMargin(new Insets(12, 12, 12, 12));
-		runsTextArea.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
+		runsList = new javax.swing.JList<>();
+		runsList.setBackground(new Color(20, 20, 35));
+		runsList.setForeground(new Color(240, 240, 255));
+		runsList.setFont(new Font("Monospaced", Font.BOLD, 20));
+		runsList.setBorder(BorderFactory.createLineBorder(new Color(120, 80, 255), 3));
 
-		JScrollPane runsScroll = new JScrollPane(runsTextArea);
+		JScrollPane runsScroll = new JScrollPane(runsList);
 		runsScroll.setPreferredSize(new Dimension(250, 200));
 		runsScroll.setMaximumSize(new Dimension(250, 200));
 		runsScroll.setMinimumSize(new Dimension(250, 200));

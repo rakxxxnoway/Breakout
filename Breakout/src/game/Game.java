@@ -122,12 +122,27 @@ public class Game
 	    else
 	        sfx.playSound("gameover.wav", false);
 
-	    String name = JOptionPane.showInputDialog(null, "Enter your name:");
+	    List<ScoreEntry> savedScores = ScoreStorage.loadScores();
+	    HighscoreList highscoreList = new HighscoreList();
 
-	    if (name == null || name.trim().isEmpty())
-	        name = "Anonymous";
+	    highscoreList.setEntries(savedScores);
 
-	    ScoreManager.saveScore(name, plr.getScore());
+	    String name = "---";
+
+	    if (highscoreList.qualifies(plr.getScore()))
+	    {
+	        name = JOptionPane.showInputDialog(null, "Enter initials (max 3):");
+
+	        if (name == null || name.trim().isEmpty())
+	            name = "ANO";
+
+	        name = name.trim().toUpperCase();
+
+	        if (name.length() > 3)
+	            name = name.substring(0, 3);
+	    }
+
+	    ScoreStorage.saveScore(name, plr.getScore());
 	}
 	
 	public void update(Keyboard keyboard)
