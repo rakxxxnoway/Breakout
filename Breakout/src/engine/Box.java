@@ -127,7 +127,7 @@ public class Box {
             if (!slave.isCollisionEnabled())
                 continue;
 
-            if (!Collision.aabb(
+            if (!Collision.isObjectsCollide(
                     getX(), 			getY(),
                     getWidth(),			getHeight(),
                     slave.getX(), 		slave.getY(),
