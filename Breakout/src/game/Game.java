@@ -52,7 +52,7 @@ public class Game
 		music.playSound("ambient.wav", true);
 		
 		// font
-		gameFont = game.setFont("/ttf/PressStart2P.ttf");
+		gameFont = game.setFont("/ttf/PressStart2P.ttf", Settings.FONT_SIZE);
 		fontColor = Color.WHITE;
 		
 		//==== sprites ====

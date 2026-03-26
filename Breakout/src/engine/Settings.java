@@ -1,5 +1,7 @@
 package engine;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.util.Random;
 
 public class Settings
@@ -42,7 +44,7 @@ public class Settings
 	public static final int GAMEOVER_Y 				= startY(GAMEOVER_SCALE_Y);
 	
 	
-	// Tweak
+	// Path
 	public static final String imgRootPath 			= "img/";
 	public static final String musicRootPath 		= "music/";
 	public static final String ttfRootPath 			= "ttf/";
@@ -54,6 +56,7 @@ public class Settings
 	public static final int PLAYER_HEIGHT 			= 15;
 	public static final int PLAYER_START_Y 			= 730;
 	public static final int PLAYER_START_X 			= startX(playerWidth);
+	
 	
 	// Ball
 	public static final int BALL_SQR 				= 25;
@@ -78,6 +81,21 @@ public class Settings
 	public static boolean gameOver 					= false;
 	public static boolean win 						= false;
 	public static boolean scoreSaved				= false;
+	
+	
+	// Tweak
+	public static final Dimension SCROLL_PANE_DIM	= new Dimension(250, 200);
+	public static final Dimension BOX_SIZE 			= new Dimension(320, 220);
+	
+	public static final Color COLOR_L_BLUE 			= new Color(240, 240, 255);
+	public static final Color COLOR_NAVY_BLACK 		= new Color(20, 20, 35);
+	public static final Color COLOR_PURPLE 			= new Color(120, 80, 255);
+	public static final Color COLOR_YELLOW_LEMON 	= new Color(220, 200, 10);
+	public static final int FONT_SIZE_SCOREBOARD 	= 15;
+	
+	
+	// Files
+	public static final String DATA_FILE 			= "data.txt";
 	
 	
 	// Methods

@@ -11,44 +11,38 @@ import java.util.List;
 
 public class ScoreStorage
 {
-    private static final Path SCORE_FILE = Paths.get("data", "data.txt");
+    private static final Path SCORE_FILE = Paths.get(Settings.dataRootPath + Settings.DATA_FILE);
 
+    
     private ScoreStorage() {}
 
+    
     private static void ensureFileExists() throws IOException
     {
-        Files.createDirectories(SCORE_FILE.getParent());
-        Files.write(SCORE_FILE, new byte[0], StandardOpenOption.CREATE);
+        if( !Files.exists(SCORE_FILE) )
+        	Files.createFile(SCORE_FILE);
     }
 
+    
     public static void saveScore(String initials, int score)
     {
         try
         {
             ensureFileExists();
-
-            if (initials == null || initials.trim().isEmpty())
-                initials = "ANO";
-
+            
             initials = initials.trim().toUpperCase().replace(";", ",");
 
             if (initials.length() > 3)
                 initials = initials.substring(0, 3);
 
-            Files.writeString(
-                SCORE_FILE,
-                initials + ";" + score + System.lineSeparator(),
-                StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.APPEND
-            );
+            String str = "%s;%d\n".formatted(initials, score);
+            
+            Files.writeString( SCORE_FILE, str, StandardOpenOption.APPEND );
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        catch (IOException e) 		{ e.printStackTrace(); }
     }
 
+    
     public static List<ScoreEntry> loadScores()
     {
         List<ScoreEntry> scores = new ArrayList<>();
@@ -68,25 +62,13 @@ public class ScoreStorage
 
                 String[] parts = line.split(";");
 
-                if (parts.length != 2)
-                    continue;
-
                 String initials = parts[0].trim();
 
-                try
-                {
-                    int score = Integer.parseInt(parts[1].trim());
-                    scores.add(new ScoreEntry(initials, score));
-                }
-                catch (NumberFormatException e)
-                {
-                }
+
+                int score = Integer.parseInt(parts[1].trim());
+                scores.add(new ScoreEntry(initials, score));
             }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        } catch (IOException e) 	{ e.printStackTrace(); }
 
         return scores;
     }

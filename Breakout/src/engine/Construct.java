@@ -24,7 +24,7 @@ public class Construct
 		return new ImageIcon(Settings.imgRootPath+imgName).getImage();
 	}
 	
-	public Font setFont(String fontName)
+	public Font setFont(String fontName, float fontSize)
 	{
 	    try (InputStream is = getClass().getResourceAsStream(fontName))
 	    {
